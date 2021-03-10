@@ -175,6 +175,9 @@ public class SoccerDatabase implements SoccerDB {
             Scanner s = new Scanner(file);
             s.useDelimiter("[\\n\\\\]");
 
+            //Purges database
+            database.clear();
+
             //Declaring variables to hold information from each line
             SoccerPlayer player;
             String firstName;
@@ -196,11 +199,6 @@ public class SoccerDatabase implements SoccerDB {
                 goals = Integer.parseInt(s.next());
                 yellowCards = Integer.parseInt(s.next());
                 redCards = Integer.parseInt(s.next());
-
-                //Removes any duplicate players that may exist in the database
-                if(database.contains(firstName + "\\" + lastName)){
-                    removePlayer(firstName, lastName);
-                }
 
                 //Creates the new player
                 player = new SoccerPlayer(firstName, lastName, uniformNum, teamName);
