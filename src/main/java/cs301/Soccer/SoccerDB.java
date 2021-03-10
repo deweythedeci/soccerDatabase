@@ -3,6 +3,7 @@ package cs301.Soccer;
 import cs301.Soccer.soccerPlayer.SoccerPlayer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashSet;
 
 /**
@@ -112,7 +113,7 @@ public interface SoccerDB {
      * @param file the object that denotes the file to write to
      * @return true iff the operation was successful
      */
-    public boolean writeData(File file);
+    public boolean writeData(File file) throws FileNotFoundException;
 
     /**
      * Returns the set of teams for all the players in the database.

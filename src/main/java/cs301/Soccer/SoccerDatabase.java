@@ -3,6 +3,8 @@ package cs301.Soccer;
 import android.util.Log;
 import cs301.Soccer.soccerPlayer.SoccerPlayer;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -177,6 +179,23 @@ public class SoccerDatabase implements SoccerDB {
     // write data to file
     @Override
     public boolean writeData(File file) {
+        /*try{
+            //prints all player data to file
+            PrintWriter pw = new PrintWriter(file);
+            Enumeration<SoccerPlayer> players = database.elements();
+            SoccerPlayer player;
+            while(players.hasMoreElements()){
+                player = players.nextElement();
+                pw.println(player.getFirstName() + "\\" + player.getLastName() + "\\" +
+                        player.getTeamName() + "\\" + player.getUniform() + "\\" +
+                        player.getGoals() + "\\" + player.getYellowCards() + "\\" +
+                        player.getRedCards());
+            }
+            return true;
+        }
+        catch(FileNotFoundException fe){
+            return false;
+        }*/
         return false;
     }
 
