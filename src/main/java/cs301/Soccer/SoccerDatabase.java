@@ -38,7 +38,7 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean removePlayer(String firstName, String lastName) {
-        return false;
+        return database.remove(firstName + "\\" + lastName) != null;
     }
 
     /**
@@ -58,7 +58,12 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpGoals(String firstName, String lastName) {
-        return false;
+        SoccerPlayer player = getPlayer(firstName, lastName);
+        if(player == null){
+            return false;
+        }
+        player.bumpGoals();
+        return true;
     }
 
     /**
@@ -68,7 +73,12 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpYellowCards(String firstName, String lastName) {
-        return false;
+        SoccerPlayer player = getPlayer(firstName, lastName);
+        if(player == null){
+            return false;
+        }
+        player.bumpYellowCards();
+        return true;
     }
 
     /**
@@ -78,7 +88,12 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpRedCards(String firstName, String lastName) {
-        return false;
+        SoccerPlayer player = getPlayer(firstName, lastName);
+        if(player == null){
+            return false;
+        }
+        player.bumpRedCards();
+        return true;
     }
 
     /**
@@ -89,7 +104,23 @@ public class SoccerDatabase implements SoccerDB {
     @Override
     // report number of players on a given team (or all players, if null)
     public int numPlayers(String teamName) {
-        return -1;
+
+        //if teamName is for all players
+        if(teamName == null){
+            return database.size();
+        }
+
+        //gets a list of all the players in the database
+        Enumeration<SoccerPlayer> players = database.elements();
+
+        //iterates through the players and counts those with matching team names
+        int num = 0;
+        while(players.hasMoreElements()){
+            if(players.nextElement().getTeamName().equals(teamName)){
+                num++;
+            }
+        }
+        return num;
     }
 
     /**
@@ -100,6 +131,30 @@ public class SoccerDatabase implements SoccerDB {
     // get the nTH player
     @Override
     public SoccerPlayer playerIndex(int idx, String teamName) {
+
+        //holds the current index
+        int currIdx = 0;
+
+        //iterates through a list of all the players in the database
+        Enumeration<SoccerPlayer> players = database.elements();
+        SoccerPlayer player;
+        while(players.hasMoreElements()){
+
+            player = players.nextElement();
+
+            //checks if the team name matches or team name is set to all
+            if(teamName == null || player.getTeamName().equals(teamName)){
+
+                //if index matches return player
+                if(currIdx == idx){
+                    return player;
+                }
+
+                currIdx++;
+            }
+        }
+
+        //if player cannot be found returns null
         return null;
     }
 
