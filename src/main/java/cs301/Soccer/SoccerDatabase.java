@@ -4,7 +4,9 @@ import android.util.Log;
 import cs301.Soccer.soccerPlayer.SoccerPlayer;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.PrintWriter;
+import java.nio.CharBuffer;
 import java.util.*;
 
 /**
@@ -168,7 +170,62 @@ public class SoccerDatabase implements SoccerDB {
     // read data from file
     @Override
     public boolean readData(File file) {
-        return file.exists();
+        try{
+            //Scanner that looks for separating characters
+            Scanner s = new Scanner(file);
+            s.useDelimiter("[\\n\\\\]");
+
+            //Declaring variables to hold information from each line
+            SoccerPlayer player;
+            String firstName;
+            String lastName;
+            String teamName;
+            int uniformNum;
+            int goals;
+            int yellowCards;
+            int redCards;
+
+            //Goes line by line through the given file
+            while(s.hasNext()){
+
+                //Gets each piece of data from the current line
+                firstName = s.next();
+                lastName = s.next();
+                teamName = s.next();
+                uniformNum = Integer.parseInt(s.next());
+                goals = Integer.parseInt(s.next());
+                yellowCards = Integer.parseInt(s.next());
+                redCards = Integer.parseInt(s.next());
+
+                //Removes any duplicate players that may exist in the database
+                if(database.contains(firstName + "\\" + lastName)){
+                    removePlayer(firstName, lastName);
+                }
+
+                //Creates the new player
+                player = new SoccerPlayer(firstName, lastName, uniformNum, teamName);
+
+                //Initializes goals, yellow cards, and red cards
+                for(int i = 0; i < goals; i++){
+                    player.bumpGoals();
+                }
+                for(int i = 0; i < yellowCards; i++){
+                    player.bumpYellowCards();
+                }
+                for(int i = 0; i < redCards; i++){
+                    player.bumpRedCards();
+                }
+
+                //Adds the new player to the database
+                database.put(firstName + "\\" + lastName, player);
+            }
+            s.close();
+
+            return true;
+        }
+        catch(FileNotFoundException e){
+            return false;
+        }
     }
 
     /**
@@ -179,24 +236,24 @@ public class SoccerDatabase implements SoccerDB {
     // write data to file
     @Override
     public boolean writeData(File file) {
-        /*try{
+        try{
             //prints all player data to file
             PrintWriter pw = new PrintWriter(file);
             Enumeration<SoccerPlayer> players = database.elements();
             SoccerPlayer player;
             while(players.hasMoreElements()){
                 player = players.nextElement();
-                pw.println(player.getFirstName() + "\\" + player.getLastName() + "\\" +
+                pw.println(logString(player.getFirstName() + "\\" + player.getLastName() + "\\" +
                         player.getTeamName() + "\\" + player.getUniform() + "\\" +
                         player.getGoals() + "\\" + player.getYellowCards() + "\\" +
-                        player.getRedCards());
+                        player.getRedCards()));
             }
+            pw.close();
             return true;
         }
-        catch(FileNotFoundException fe){
+        catch(FileNotFoundException e){
             return false;
-        }*/
-        return false;
+        }
     }
 
     /**
@@ -217,7 +274,16 @@ public class SoccerDatabase implements SoccerDB {
     // return list of teams
     @Override
     public HashSet<String> getTeams() {
-        return new HashSet<String>();
+        HashSet<String> teams = new HashSet<>();
+        Enumeration<SoccerPlayer> players = database.elements();
+        String teamName;
+        while(players.hasMoreElements()){
+            teamName = players.nextElement().getTeamName();
+            if(!teams.contains(teamName)){
+                teams.add(teamName);
+            }
+        }
+        return teams;
     }
 
     /**
